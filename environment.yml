@@ -1,4 +1,4 @@
-name: pdesuperresolution_1d
+name: pdesuperresolution_tf
 channels:
   - conda-forge
   - pytorch
@@ -7,7 +7,6 @@ dependencies:
   - python>=3.6.0
   - scipy
   - pytorch=1.1.0
-  - tensorflow <=1.15.0
   - h5py
   - numpy
   - xarray
@@ -33,6 +32,7 @@ dependencies:
   - pip
   - pysal<=1.14.4
   - pip:
+    - tensorflow=1.15.0
     - jupyter-contrib-nbextensions
     - torchvision==0.1.9
     - pandas_summary==0.0.5

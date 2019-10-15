@@ -1,0 +1,46 @@
+name: pdesuperresolution_1d
+channels:
+  - conda-forge
+  - pytorch
+  - fastai
+dependencies:
+  - python>=3.6.0
+  - scipy
+  - pytorch=1.1.0
+  - tensorflow <=1.15.0
+  - h5py
+  - numpy
+  - xarray
+  - absl-py
+  - apache-beam
+  - ipykernel
+  - ipython
+  - ipython_genutils
+  - ipywidgets
+  - matplotlib
+  - pandas
+  - seaborn
+  - pytest=4.0.0
+  - statsmodels
+  - scikit-learn
+  - jupyterlab
+  - jupyter
+  - jupyter_client
+  - jupyter_console
+  - jupyter_core
+  - ipykernel
+  - jupyter_nbextensions_configurator
+  - pip
+  - pysal<=1.14.4
+  - pip:
+    - jupyter-contrib-nbextensions
+    - torchvision==0.1.9
+    - pandas_summary==0.0.5
+    - torchtext==0.2.3
+    - graphviz
+    - sklearn_pandas
+    - plotnine
+    - ipywidgets
+    - nbconvert
+    - pdpbox==0.1.0
+    - scikit-misc

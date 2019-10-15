@@ -36,7 +36,7 @@ class DuckArrayTest(parameterized.TestCase):
     np.testing.assert_allclose(expected, actual)
 
     with tf.Graph().as_default():
-      with tf.Session() as sess:
+      with tf.compat.v1.Session as sess:
         actual = sess.run(
             duckarray.resample_mean(tf.constant(inputs), factor=2))
     np.testing.assert_allclose(expected, actual)
@@ -48,7 +48,7 @@ class DuckArrayTest(parameterized.TestCase):
     np.testing.assert_allclose(expected, actual)
 
     with tf.Graph().as_default():
-      with tf.Session() as sess:
+      with tf.compat.v1.Session as sess:
         actual = sess.run(
             duckarray.subsample(tf.constant(inputs), factor=2))
     np.testing.assert_allclose(expected, actual)

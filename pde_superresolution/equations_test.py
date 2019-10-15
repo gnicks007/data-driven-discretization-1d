@@ -46,7 +46,7 @@ class EquationsTest(absltest.TestCase):
     y = np.random.RandomState(0).randn(10)
     np_result = equations.staggered_first_derivative(y, dx=1.0)
     with tf.Graph().as_default():
-      with tf.Session():
+      with tf.compat.v1.Session:
         tf_result = equations.staggered_first_derivative(
             tf.constant(y), dx=1.0).eval()
     np.testing.assert_allclose(np_result, tf_result)

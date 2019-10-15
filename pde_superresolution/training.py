@@ -36,7 +36,7 @@ from typing import Any, Dict, List, Tuple, Type, Union
 from pde_superresolution import equations
 from pde_superresolution import model
 
-
+print("inside training")
 def create_hparams(equation: str, **kwargs: Any) -> tf.contrib.training.HParams:
   """Create default hyper-parameters for training a model.
 

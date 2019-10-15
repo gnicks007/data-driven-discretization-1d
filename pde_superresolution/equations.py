@@ -35,7 +35,6 @@ T = TypeVar('T')
 
 print("inside equations")
 print(tf.__version__)
-warnings.simplefilter("ignore")
 
 @enum.unique
 class ExactMethod(enum.Enum):
@@ -591,10 +590,64 @@ class GodunovKSEquation(KSEquation):
     return y_t
 
 
+class TBGEquation(Equation):
+  """1D Structural Relaxation for TBG (Koshino 2017)."""
+
+  CONSERVATIVE = False 
+  GRID_OFFSET = polynomials.GridOffset.CENTERED
+  EXACT_METHOD = ExactMethod.POLYNOMIAL
+  DERIVATIVE_NAMES = ('u', 'u_xx')
+  DERIVATIVE_ORDERS = (0,2)
+  resample_method = 'subsample' #looking to override value in Equation baseclass
+
+  def __init__(self,
+               num_points: int,
+               resample_factor: int = 1,
+               period: float = 2 * np.pi,
+               random_seed: int = 0,
+              ):
+    super(TBGEquation, self).__init__(
+        num_points, resample_factor, period, random_seed)
+
+  def equation_of_motion(
+      self, y: T, spatial_derivatives: Mapping[str, T]) -> T:
+    #y = spatial_derivatives['u']
+    y_xx = spatial_derivatives['u_xx']
+    x = self.grid.solution_x # self.grid is from baseclass Equation
+    print(x)
+
+    # need to make sure I can add x and y together
+    # may need to add a batch axis
+    eqn = y_xx - tf.sin(x + y) # y comes from the function input
+    return eqn
+
+  def params(self):
+    return dict(
+        num_points=self.grid.reference_num_points,
+        period=self.grid.period,
+        random_seed=self.random_seed,
+    )
+
+  def to_fine(self):
+    return type(self)(**self.params())
+
+  @classmethod
+  def exact_type(cls):
+    return TBGEquation
+
+  @classmethod
+  def conservative_type(cls):
+    return None
+
+  @classmethod
+  def base_type(cls):
+    return TBGEquation
+
 EQUATION_TYPES = {
     'burgers': BurgersEquation,
     'kdv': KdVEquation,
     'ks': KSEquation,
+    'TBG': TBGEquation,
 }
 
 CONSERVATIVE_EQUATION_TYPES = {

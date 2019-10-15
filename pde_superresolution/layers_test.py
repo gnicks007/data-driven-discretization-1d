@@ -36,7 +36,7 @@ class LayersTest(parameterized.TestCase):
 
   def test_static_or_dynamic_size(self):
     with tf.Graph().as_default():
-      with tf.Session():
+      with tf.compat.v1.Session:
         self.assertEqual(layers.static_or_dynamic_size(tf.range(5), axis=0), 5)
 
         feed_size = tf.placeholder(tf.int32, ())
@@ -62,13 +62,13 @@ class LayersTest(parameterized.TestCase):
   )
   def test_pad_periodic(self, padding, expected, center):
     with tf.Graph().as_default():
-      with tf.Session():
+      with tf.compat.v1.Session:
         inputs = pad_periodic_1d(tf.range(3), padding=padding, center=center)
         np.testing.assert_equal(inputs.eval(), expected)
 
   def test_nn_conv1d_periodic(self):
     with tf.Graph().as_default():
-      with tf.Session():
+      with tf.compat.v1.Session:
         inputs = tf.range(5.0)[tf.newaxis, :, tf.newaxis]
 
         filters = tf.constant([0.0, 1.0, 0.0])[:, tf.newaxis, tf.newaxis]

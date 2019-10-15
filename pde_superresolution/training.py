@@ -122,6 +122,10 @@ def create_hparams(equation: str, **kwargs: Any) -> tf.contrib.training.HParams:
   Returns:
     HParams object with all hyperparameter values.
   """
+
+  print("inside training.py \n\n")
+  print(tf.__version__)
+
   hparams = tf.contrib.training.HParams(
       # dataset parameters
       equation=equation,
@@ -302,7 +306,7 @@ class Inferer(object):
     self._initializer = initializer
     self._metrics = metrics
 
-  def run(self, sess: tf.Session) -> Dict[str, np.ndarray]:
+  def run(self, sess: tf.compat.v1.Session) -> Dict[str, np.ndarray]:
     """Run inference over a complete dataset.
 
     Args:
@@ -314,7 +318,7 @@ class Inferer(object):
     return evaluate_metrics(sess, self._initializer, self._metrics)
 
 
-def evaluate_metrics(sess: tf.Session,
+def evaluate_metrics(sess: tf.compat.v1.Session,
                      initializer: tf.Tensor,
                      metrics: MetricsDict) -> Dict[str, np.ndarray]:
   """Evaluate metrics over a complete dataset.
@@ -351,7 +355,7 @@ def load_dataset(dataset: tf.data.Dataset) -> Dict[str, np.ndarray]:
       k: tf.contrib.metrics.streaming_concat(v) for k, v in tensors.items()
   }
   initializer = tf.local_variables_initializer()
-  with tf.Session(config=_session_config()) as sess:
+  with tf.compat.v1.Session(config=_session_config()) as sess:
     return evaluate_metrics(sess, initializer, metrics)
 
 
@@ -507,7 +511,7 @@ def metrics_one_linear(metrics: Dict[str, float]) -> str:
                   matching_metrics_string('frac_below_baseline')))
 
 
-class SaveAtEnd(tf.train.SessionRunHook):
+class SaveAtEnd(tf.estimator.SessionRunHook):
   """A simple hook to save results at the end of training."""
 
   def __init__(self, path):
@@ -525,9 +529,9 @@ def checkpoint_dir_to_path(checkpoint_dir: str) -> str:
 
 
 def save_summaries(metrics: Dict[str, float],
-                   writer: tf.summary.FileWriter,
+                   writer: tf.compat.v1.summary.FileWriter,
                    global_step: int) -> None:
-  """Log metrics with a tf.summary.FileWriter."""
+  """Log metrics with a tf.compat.v1.summary.FileWriter."""
   values = [tf.Summary.Value(tag=k, simple_value=v) for k, v in metrics.items()]
   summary = tf.Summary(value=values)
   writer.add_summary(summary, global_step)
@@ -610,9 +614,9 @@ def training_loop(snapshots: np.ndarray,
       config=_session_config(),
       hooks=[SaveAtEnd(checkpoint_dir_to_path(checkpoint_dir))]) as sess:
 
-    test_writer = tf.summary.FileWriter(
+    test_writer = tf.compat.v1.summary.FileWriter(
         os.path.join(checkpoint_dir, 'test'), sess.graph, flush_secs=60)
-    train_writer = tf.summary.FileWriter(
+    train_writer = tf.compat.v1.summary.FileWriter(
         os.path.join(checkpoint_dir, 'train'), sess.graph, flush_secs=60)
 
     initial_step = sess.run(global_step)

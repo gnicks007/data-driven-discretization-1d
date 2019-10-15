@@ -64,7 +64,7 @@ class SavedModelDifferentiator(Differentiator):
       self.value = equation.finalize_time_derivative(self.t, time_derivative)
 
       saver = tf.train.Saver()
-      self.sess = tf.Session()
+      self.sess = tf.compat.v1.Session
       saver.restore(self.sess, checkpoint_dir)
 
   def __call__(self, t: float, y: np.ndarray) -> np.ndarray:
@@ -96,7 +96,7 @@ class PolynomialDifferentiator(Differentiator):
           for i, k in enumerate(equation.DERIVATIVE_NAMES)
       }
 
-      self.sess = tf.Session()
+      self.sess = tf.compat.v1.Session()
 
   def __call__(self, t: float, y: np.ndarray) -> np.ndarray:
     return self.sess.run(self.value, feed_dict={self.t: t, self.inputs: y})

@@ -419,7 +419,7 @@ _NONLINEARITIES = {
 
 def predict_coefficients(inputs: tf.Tensor,
                          hparams: tf.contrib.training.HParams,
-                         reuse: object = tf.AUTO_REUSE) -> tf.Tensor:
+                         reuse: object = tf.compat.v1.AUTO_REUSE) -> tf.Tensor:
   """Predict finite difference coefficients with a neural networks.
 
   Args:
@@ -548,7 +548,7 @@ def apply_coefficients(coefficients: tf.Tensor, inputs: tf.Tensor) -> tf.Tensor:
   return tf.einsum('bxdi,bxi->bxd', coefficients, patches)
 
 
-def _multilayer_conv1d(inputs, hparams, num_targets, reuse=tf.AUTO_REUSE):
+def _multilayer_conv1d(inputs, hparams, num_targets, reuse=tf.compat.v1.AUTO_REUSE):
   """Apply multiple conv1d layers with input normalization."""
   _, equation = equations.from_hparams(hparams)
   assert_consistent_solution(equation, inputs)
@@ -569,7 +569,7 @@ def _multilayer_conv1d(inputs, hparams, num_targets, reuse=tf.AUTO_REUSE):
   return net
 
 
-def predict_space_derivatives_directly(inputs, hparams, reuse=tf.AUTO_REUSE):
+def predict_space_derivatives_directly(inputs, hparams, reuse=tf.compat.v1.AUTO_REUSE):
   """Predict finite difference coefficients directly from a neural net."""
   _, equation = equations.from_hparams(hparams)
   num_targets = len(equation.DERIVATIVE_ORDERS)
@@ -579,7 +579,7 @@ def predict_space_derivatives_directly(inputs, hparams, reuse=tf.AUTO_REUSE):
 def predict_space_derivatives(
     inputs: tf.Tensor,
     hparams: tf.contrib.training.HParams,
-    reuse: object = tf.AUTO_REUSE) -> tf.Tensor:
+    reuse: object = tf.compat.v1.AUTO_REUSE) -> tf.Tensor:
   """Infer normalized derivatives from inputs with our forward model.
 
   Args:
@@ -600,13 +600,13 @@ def predict_space_derivatives(
         'unrecognized model_target: {}'.format(hparams.model_target))
 
 
-def predict_time_derivative_directly(inputs, hparams, reuse=tf.AUTO_REUSE):
+def predict_time_derivative_directly(inputs, hparams, reuse=tf.compat.v1.AUTO_REUSE):
   """Predict time derivatives directly, without using the equation of motion."""
   output = _multilayer_conv1d(inputs, hparams, num_targets=1, reuse=reuse)
   return tf.squeeze(output, axis=-1)
 
 
-def predict_flux_directly(inputs, hparams, reuse=tf.AUTO_REUSE):
+def predict_flux_directly(inputs, hparams, reuse=tf.compat.v1.AUTO_REUSE):
   """Predict flux directly, without using the equation of motion."""
   _, equation = equations.from_hparams(hparams)
   dx = equation.grid.solution_dx
@@ -618,7 +618,7 @@ def predict_flux_directly(inputs, hparams, reuse=tf.AUTO_REUSE):
 def predict_time_derivative(
     inputs: tf.Tensor,
     hparams: tf.contrib.training.HParams,
-    reuse: object = tf.AUTO_REUSE) -> tf.Tensor:
+    reuse: object = tf.compat.v1.AUTO_REUSE) -> tf.Tensor:
   """Infer time evolution from inputs with our forward model.
 
   Args:

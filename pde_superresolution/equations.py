@@ -19,6 +19,7 @@ from __future__ import print_function
 
 import enum
 import json
+import warnings
 
 import numpy as np
 import tensorflow as tf
@@ -32,6 +33,9 @@ from pde_superresolution import polynomials  # pylint: disable=g-bad-import-orde
 # supports it (b/74212131)
 T = TypeVar('T')
 
+print("inside equations")
+print(tf.__version__)
+warnings.simplefilter("ignore")
 
 @enum.unique
 class ExactMethod(enum.Enum):

@@ -161,7 +161,7 @@ def setup_training(snapshots: tf.Tensor, hparams: tf.contrib.training.HParams):
     predict_space_derivs = model.predict_space_derivatives(snapshots, hparams)
     predict_eqn_value = model.apply_space_derivatives(predict_space_derivs, snapshots, tbg_eqn) # we use actual grid values for u not predicted
     loss = tf.reduce_mean(tf.square(predict_eqn_value))
-    global_step = tf.train.get_or_create_global_step()
+    global_step = tf.compat.v1.train.get_or_create_global_step()
 
     if len(hparams.learning_rates) > 1:
         learning_rate = tf.train.piecewise_constant(
@@ -170,9 +170,9 @@ def setup_training(snapshots: tf.Tensor, hparams: tf.contrib.training.HParams):
     else:
         (learning_rate,) = hparams.learning_rates
 
-    optimizer = tf.train.AdamOptimizer(learning_rate, beta2=0.99)
+    optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate, beta2=0.99)
 
-    update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+    update_ops = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.UPDATE_OPS)
     with tf.control_dependencies(update_ops):
         train_step = optimizer.minimize(loss, global_step=global_step)
 
@@ -202,14 +202,14 @@ def training_loop(snapshots: tf.Tensor,
   logging.info('Setting up training')
   _, train_step = setup_training(snapshots, hparams)
 
-  global_step = tf.train.get_or_create_global_step()
+  global_step = tf.compat.v1.train.get_or_create_global_step()
 
-  logging.info('Variables: %s', '\n'.join(map(str, tf.trainable_variables())))
+  logging.info('Variables: %s', '\n'.join(map(str, tf.compat.v1.trainable_variables())))
 
   logged_metrics = []
   equation_type = equations.equation_type_from_hparams(hparams)
 
-  with tf.train.MonitoredTrainingSession(
+  with tf.compat.v1.train.MonitoredTrainingSession(
       master=master,
       checkpoint_dir=checkpoint_dir,
       save_checkpoint_secs=300,
@@ -228,7 +228,6 @@ def training_loop(snapshots: tf.Tensor,
 #run_test()
 #train_network()
 
-snapshots, hparams = get_data_hparams()
 #loss, train_step = setup_training(snapshots, hparams)
-
-training_loop(snapshots, './', hparams)
+snapshots, hparams = get_data_hparams()
+training_loop(snapshots, './checkpoints', hparams)

@@ -212,9 +212,9 @@ def create_training_step(
   else:
     (learning_rate,) = hparams.learning_rates
 
-  optimizer = tf.train.AdamOptimizer(learning_rate, beta2=0.99)
+  optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate, beta2=0.99)
 
-  update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+  update_ops = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.UPDATE_OPS)
   with tf.control_dependencies(update_ops):
     train_step = optimizer.minimize(loss, global_step=global_step)
 
@@ -517,7 +517,7 @@ class SaveAtEnd(tf.estimator.SessionRunHook):
     self.path = path
 
   def begin(self):
-    self.saver = tf.train.Saver()
+    self.saver = tf.compat.v1.train.Saver()
 
   def end(self, sess):
     self.saver.save(sess, self.path)
@@ -601,12 +601,12 @@ def training_loop(snapshots: np.ndarray,
 
   global_step = tf.train.get_or_create_global_step()
 
-  logging.info('Variables: %s', '\n'.join(map(str, tf.trainable_variables())))
+  logging.info('Variables: %s', '\n'.join(map(str, tf.compat.v1.trainable_variables())))
 
   logged_metrics = []
   equation_type = equations.equation_type_from_hparams(hparams)
 
-  with tf.train.MonitoredTrainingSession(
+  with tf.compat.v1.train.MonitoredTrainingSession(
       master=master,
       checkpoint_dir=checkpoint_dir,
       save_checkpoint_secs=300,

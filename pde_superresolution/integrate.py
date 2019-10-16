@@ -64,7 +64,7 @@ class SavedModelDifferentiator(Differentiator):
           self.inputs[tf.newaxis, :], hparams), axis=0)
       self.value = equation.finalize_time_derivative(self.t, time_derivative)
 
-      saver = tf.train.Saver()
+      saver = tf.compat.v1.train.Saver()
       self.sess = tf.compat.v1.Session
       saver.restore(self.sess, checkpoint_dir)
 

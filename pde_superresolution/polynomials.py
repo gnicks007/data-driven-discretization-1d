@@ -13,20 +13,17 @@
 # limitations under the License.
 # ==============================================================================
 """Polynomial based models for finite differences and finite volumes."""
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
 import enum
-
 import numpy as np
 import scipy.special
 import tensorflow as tf
 from typing import Tuple
-
 from pde_superresolution import layers  # pylint: disable=g-bad-import-order
 
+print("inside polynomials.py")
 
 class GridOffset(enum.Enum):
   """Relationship between successive grids."""
@@ -45,6 +42,8 @@ def regular_grid(
     derivative_order: int,
     accuracy_order: int = 1,
     dx: float = 1) -> np.ndarray:
+
+  print("inside polynomials.regular_grid")
   """Return the smallest grid on which finite differences can be calculated.
 
   Args:
@@ -76,6 +75,8 @@ def constraints(
     method: Method,
     derivative_order: int,
     accuracy_order: int = None) -> Tuple[np.ndarray, np.ndarray]:
+  
+  print("inside polynomials.constraint")
   """Setup the linear equation A @ c = b for finite difference coefficients.
 
   Args:
@@ -101,6 +102,8 @@ def constraints(
       Arbitrarily Spaced Grids", Mathematics of Computation, 51 (184): 699-706,
       doi:10.1090/S0025-5718-1988-0935077-0, ISSN 0025-5718.
   """
+  print("grid: ", grid.shape, " method: ", method, " derivative_order: ", derivative_order, " accuracy_order: ", accuracy_order )
+ 
   if accuracy_order is None:
     # Use the highest order accuracy we can ensure in general. (In some cases,
     # e.g., centered finite differences, this solution actually has higher order
@@ -112,6 +115,7 @@ def constraints(
                      'accuracy_order: {}'.format(accuracy_order))
 
   deltas = np.unique(np.diff(grid))
+  print("deltas: ", deltas)
   if (abs(deltas - deltas[0]) > 1e-8).any():
     raise ValueError('not a regular grid: {}'.format(deltas))
   delta = deltas[0]
@@ -153,6 +157,8 @@ def coefficients(
     grid: np.ndarray,
     method: Method,
     derivative_order: int) -> np.ndarray:
+
+  print("inside polynomials.coefficients")
   """Calculate standard finite difference coefficients for the given grid.
 
   Args:
@@ -172,6 +178,9 @@ def zero_padded_coefficients(
     method: Method,
     derivative_order: int,
     padding: Tuple[int, int]) -> np.ndarray:
+
+  print("inside polynomials.zero_padded_coefficients")
+
   """Calculate finite difference coefficients, but padded by zeros.
 
   These coefficients always hold on the given grid, but the result is guaranteed
@@ -205,6 +214,7 @@ class PolynomialAccuracyLayer(object):
     nullspace: numpy array of shape (input_size, output_size) representing the
       nullspace of the constraint matrix.
   """
+  print("inside polynomials.PolynomialAccuracyLayer")
 
   def __init__(self,
                grid: np.ndarray,
@@ -282,8 +292,10 @@ def reconstruct(
     grid: np.ndarray,
     method: Method,
     derivative_order: int) -> tf.Tensor:
-  """Calculate finite difference/volumes using the standard tables.
 
+  print("inside polynomials.reconstruct")
+
+  """Calculate finite difference/volumes using the standard tables.
   Args:
     inputs: tf.Tensor with dimensions [batch, x].
     grid: grid on which to calculate finite difference coefficients.

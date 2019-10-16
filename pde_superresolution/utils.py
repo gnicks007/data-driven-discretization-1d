@@ -13,20 +13,19 @@
 # limitations under the License.
 # ==============================================================================
 """Miscellaneous utility functions."""
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
 import contextlib
 import os.path
 import shutil
 import tempfile
-
 import h5py
 import tensorflow as tf
 from typing import Iterator
 
+
+print("inside utils.py")
 
 @contextlib.contextmanager
 def write_h5py(path: str) -> Iterator[h5py.File]:
@@ -37,7 +36,6 @@ def write_h5py(path: str) -> Iterator[h5py.File]:
     yield f
   tf.gfile.Copy(local_path, path)
   shutil.rmtree(tmp_dir)
-
 
 @contextlib.contextmanager
 def read_h5py(path: str) -> Iterator[h5py.File]:

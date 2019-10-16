@@ -29,10 +29,10 @@ Based on the implementation described in:
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
 import numpy as np
-
 from pde_superresolution import duckarray  # pylint: disable=g-bad-import-order
+
+print("inside weno.py")
 
 
 # These optimal weights result in a 5th order one-point upwinded coefficients

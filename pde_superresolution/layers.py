@@ -21,9 +21,13 @@ from __future__ import print_function
 import tensorflow as tf
 from typing import Any, Union
 
+print("inside layers.py")
+
 
 def static_or_dynamic_size(
     tensor: tf.Tensor, axis: int) -> Union[int, tf.Tensor]:
+  print("inside layers.static_or_dynamic_size")
+
   """Return the size of a tensor dimension, as an integer if possible."""
   try:
     static_size = tensor.shape[axis].value
@@ -120,7 +124,8 @@ def conv1d_periodic_layer(inputs: tf.Tensor,
       is even, then the result is shifted one half unit size to the left, e.g.,
       for kernel_size=2, position 1 in the result by convolving over positions
       0 and 1 on inputs.
-    **kwargs: passed on to tf.layers.conv1d.
+    **kwargs: passed on to tf.compat.v1.layers.conv1d
+.
 
   Returns:
     Tensor with shape [batch_size, ceil(length / strides), filters].
@@ -128,7 +133,7 @@ def conv1d_periodic_layer(inputs: tf.Tensor,
   with tf.name_scope('conv1d_periodic_layer'):
     padding = (kernel_size - 1) * dilation_rate
     padded_inputs = pad_periodic(inputs, padding, center)
-    outputs = tf.layers.conv1d(padded_inputs, filters, kernel_size,
+    outputs = tf.compat.v1.layers.conv1d(padded_inputs, filters, kernel_size,
                                padding='valid',
                                strides=strides,
                                dilation_rate=dilation_rate,

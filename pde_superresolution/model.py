@@ -37,6 +37,7 @@ TensorLike = Union[tf.Tensor, np.ndarray, numbers.Number]  # pylint: disable=inv
 
 FINITE_DIFF = polynomials.Method.FINITE_DIFFERENCES
 FINITE_VOL = polynomials.Method.FINITE_VOLUMES
+print("inside model.py")
 
 
 def assert_consistent_solution(
@@ -60,7 +61,7 @@ def baseline_space_derivatives(
     inputs: tf.Tensor,
     equation: equations.Equation,
     accuracy_order: int = None) -> tf.Tensor:
-  """Calculate spatial derivatives using a baseline metohd."""
+  """Calculate spatial derivatives using a baseline method."""
   assert_consistent_solution(equation, inputs)
 
   spatial_derivatives_list = []
@@ -126,7 +127,7 @@ def apply_space_derivatives(
     equation: equation being solved.
 
   Returns:
-    Float32 Tensor with diensions [batch, x] giving the time derivatives for
+    Float32 Tensor with dimensions [batch, x] giving the time derivatives for
     the given inputs and derivative model.
   """
   derivatives_dict = {
@@ -263,6 +264,8 @@ def baseline_result(inputs: tf.Tensor,
 
   space_derivatives = baseline_space_derivatives(
       inputs, equation, accuracy_order=accuracy_order)
+  
+  print("Space_derivatives: ", space_derivatives.shape)
   time_derivative = apply_space_derivatives(
       space_derivatives, inputs, equation)
   if num_time_steps:
@@ -271,6 +274,33 @@ def baseline_result(inputs: tf.Tensor,
   else:
     integrated_solution = None
   return result_stack(space_derivatives, time_derivative, integrated_solution)
+
+
+### Steady-State Equivalent
+def baseline_result_steady(inputs: tf.Tensor,
+                    equation: equations.Equation,
+                    accuracy_order: int = None) -> tf.Tensor:
+  """Calculate derivatives
+
+  Args:
+    inputs: float32 Tensor with dimensions [batch, x].
+    equation: equation being solved.
+    accuracy_order: optional explicit accuracy order.
+
+  Returns:
+    Float32 Tensor with dimensions [batch, x, channel] with inferred space
+    derivatives
+  """
+  if accuracy_order is None:
+    equation = equation.to_exact()
+
+  space_derivatives = baseline_space_derivatives(
+      inputs, equation, accuracy_order=accuracy_order)
+  
+  print("Space_derivatives: ", space_derivatives.shape)
+  time_derivative = apply_space_derivatives(
+      space_derivatives, inputs, equation)
+  return result_stack(space_derivatives)
 
 
 def apply_noise(
@@ -347,7 +377,6 @@ def model_inputs(fine_inputs: tf.Tensor,
 
   return {'labels': labels, 'baseline': baseline, 'inputs': coarse_inputs}
 
-
 @enum.unique
 class Dataset(enum.Enum):
   TRAINING = 0
@@ -380,7 +409,7 @@ def make_dataset(snapshots: np.ndarray,
        inputs.
   """
   snapshots = np.asarray(snapshots, dtype=np.float32)
-
+  print("inside make_dataset")
   num_training = int(round(snapshots.shape[0] * hparams.frac_training))
   if dataset_type is Dataset.TRAINING:
     indexer = slice(None, num_training)
@@ -439,7 +468,7 @@ def predict_coefficients(inputs: tf.Tensor,
   _, equation = equations.from_hparams(hparams)
   assert_consistent_solution(equation, inputs)
 
-  with tf.variable_scope('predict_coefficients', reuse=reuse):
+  with tf.compat.v1.variable_scope('predict_coefficients', reuse=reuse):
     num_derivatives = len(equation.DERIVATIVE_ORDERS)
 
     grid = polynomials.regular_grid(
@@ -695,11 +724,9 @@ def predict_result(inputs: tf.Tensor,
 
   return result_stack(space_derivatives, time_derivative, integrated_solution)
 
-
 # TODO(shoyer): replace with TypeVar('T', np.ndarray, tf.Tensor) when pytype
 # supports it (b/74212131)
 T = TypeVar('T')
-
 
 def abs_and_rel_error(predictions: T,
                       labels: T,

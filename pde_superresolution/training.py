@@ -18,10 +18,8 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
 import copy
 import os.path
-
 from absl import logging
 import numpy as np
 import pandas as pd
@@ -31,12 +29,14 @@ from tensorflow.contrib.training.python.training import hparam_pb2  # pylint: di
 from tensorflow.core.protobuf import config_pb2
 from tensorflow.core.protobuf import rewriter_config_pb2
 from typing import Any, Dict, List, Tuple, Type, Union
-
 # pylint: disable=g-bad-import-order
 from pde_superresolution import equations
 from pde_superresolution import model
 
-print("inside training")
+print("inside training.py")
+
+
+
 def create_hparams(equation: str, **kwargs: Any) -> tf.contrib.training.HParams:
   """Create default hyper-parameters for training a model.
 
@@ -123,8 +123,7 @@ def create_hparams(equation: str, **kwargs: Any) -> tf.contrib.training.HParams:
     HParams object with all hyperparameter values.
   """
 
-  print("inside training.py \n\n")
-  print(tf.__version__)
+  print("training.create_hparams\n\n")
 
   hparams = tf.contrib.training.HParams(
       # dataset parameters

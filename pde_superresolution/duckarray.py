@@ -13,22 +13,19 @@
 # limitations under the License.
 # ==============================================================================
 """Duck array functions that work on NumPy arrays and TensorFlow tensors.
-
 TODO(shoyer): remove this in favor of a comprehensive solution.
 """
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
 import numpy as np
 import tensorflow as tf
 from typing import List, Sequence, Optional, Tuple, TypeVar, Union
-
-
 # TODO(shoyer): replace with TypeVar('T', np.ndarray, tf.Tensor) when pytype
 # supports it (b/74212131)
 T = TypeVar('T')
 
+print("inside duckarray.py")
 
 def concatenate(arrays: List[T], axis: int) -> T:
   """Concatenate arrays or tensors."""
@@ -95,11 +92,11 @@ def where(cond: T, x: T, y: T) -> T:
 
 
 def rfft(x: T) -> T:
-  return tf.spectral.rfft(x) if isinstance(x, tf.Tensor) else np.fft.rfft(x)
+  return tf.signal.rfft(x) if isinstance(x, tf.Tensor) else np.fft.rfft(x)
 
 
 def irfft(x: T) -> T:
-  return tf.spectral.irfft(x) if isinstance(x, tf.Tensor) else np.fft.irfft(x)
+  return tf.signal.irfft(x) if isinstance(x, tf.Tensor) else np.fft.irfft(x)
 
 
 def spectral_derivative(x: T, order: int = 1, period: float = 2*np.pi) -> T:

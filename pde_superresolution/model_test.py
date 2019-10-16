@@ -30,7 +30,7 @@ class ModelTest(parameterized.TestCase):
 
   def test_stack_all_rolls(self):
     with tf.Graph().as_default():
-      with tf.Session():
+      with tf.compat.v1.Session():
         inputs = tf.range(5)
         actual = model._stack_all_rolls(inputs, 3)
         expected = [[0, 1, 2, 3, 4], [1, 2, 3, 4, 0], [2, 3, 4, 0, 1]]

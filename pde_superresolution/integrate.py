@@ -33,8 +33,9 @@ from pde_superresolution import model  # pylint: disable=g-bad-import-order
 from pde_superresolution import training  # pylint: disable=g-bad-import-order
 from pde_superresolution import weno  # pylint: disable=g-bad-import-order
 
-
 _DEFAULT_TIMES = np.linspace(0, 10, num=201)
+
+print("inside integrate.py")
 
 
 class Differentiator(object):

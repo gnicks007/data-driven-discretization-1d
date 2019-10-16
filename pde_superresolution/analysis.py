@@ -13,16 +13,15 @@
 # limitations under the License.
 # ==============================================================================
 """Analysis functions for saved model results."""
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
 import collections
 from typing import Union
-
 import xarray
 from pde_superresolution import duckarray  # pylint: disable=g-bad-import-order
+
+print("inside analysis.py")
 
 
 XarrayObject = Union[xarray.Dataset, xarray.DataArray]  # pylint: disable=invalid-name

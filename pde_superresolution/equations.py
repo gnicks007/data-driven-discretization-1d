@@ -33,7 +33,7 @@ from pde_superresolution import polynomials  # pylint: disable=g-bad-import-orde
 # supports it (b/74212131)
 T = TypeVar('T')
 
-print("inside equations")
+print("inside equations.py")
 print(tf.__version__)
 
 @enum.unique
@@ -198,7 +198,6 @@ class Equation(object):
 
 class RandomForcing(object):
   """Deterministic random forcing, periodic in both space and time."""
-
   def __init__(self,
                grid: Grid,
                nparams: int = 20,
@@ -592,11 +591,10 @@ class GodunovKSEquation(KSEquation):
 
 class TBGEquation(Equation):
   """1D Structural Relaxation for TBG (Koshino 2017)."""
-
   CONSERVATIVE = False 
   GRID_OFFSET = polynomials.GridOffset.CENTERED
   EXACT_METHOD = ExactMethod.POLYNOMIAL
-  DERIVATIVE_NAMES = ('u', 'u_xx')
+  DERIVATIVE_NAMES = ('u','u_xx')
   DERIVATIVE_ORDERS = (0,2)
   resample_method = 'subsample' #looking to override value in Equation baseclass
 
@@ -614,9 +612,9 @@ class TBGEquation(Equation):
     #y = spatial_derivatives['u']
     y_xx = spatial_derivatives['u_xx']
     x = self.grid.solution_x # self.grid is from baseclass Equation
-    print(x)
+    print("equation of motion, x length: ", len(x))
 
-    # need to make sure I can add x and y together
+    # need to make sure I can add x and  y together
     # may need to add a batch axis
     eqn = y_xx - tf.sin(x + y) # y comes from the function input
     return eqn
@@ -630,6 +628,14 @@ class TBGEquation(Equation):
 
   def to_fine(self):
     return type(self)(**self.params())
+
+  @property
+  def time_step(self) -> float:
+    return 0
+
+  @property
+  def standard_deviation(self) -> float:
+    return 1
 
   @classmethod
   def exact_type(cls):
@@ -662,7 +668,6 @@ FLUX_EQUATION_TYPES = {
     'ks': GodunovKSEquation,
 }
 
-
 def equation_type_from_hparams(
     hparams: tf.contrib.training.HParams) -> Type[Equation]:
   """Create an equation type from HParams.
@@ -680,6 +685,7 @@ def equation_type_from_hparams(
       types = CONSERVATIVE_EQUATION_TYPES
   else:
     types = EQUATION_TYPES
+
   return types[hparams.equation]
 
 

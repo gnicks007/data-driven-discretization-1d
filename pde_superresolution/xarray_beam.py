@@ -22,6 +22,7 @@ import tensorflow as tf
 from typing import Iterator, List
 import xarray
 
+print("inside xarray_beam.py")
 
 def read_netcdf(path: str) -> xarray.Dataset:
   """Read a netCDF file from a path into memory."""

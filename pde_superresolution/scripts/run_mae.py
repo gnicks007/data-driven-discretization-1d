@@ -53,11 +53,11 @@ def create_mae_netcdf(simulation_path, stop_times=None, exact_path=None):
     return
 
   # read data
-  with tf.gfile.GFile(simulation_path, 'rb') as f:
+  with tf.io.gfile.GFile (simulation_path, 'rb') as f:
     ds = xarray.open_dataset(f.read()).load()
 
   if exact_path is not None:
-    with tf.gfile.GFile(exact_path, 'rb') as f:
+    with tf.io.gfile.GFile (exact_path, 'rb') as f:
       ds_exact = xarray.open_dataset(f.read()).load()
       ds['y_exact'] = (ds_exact['y']
                        .rename({'x': 'x_high'})
@@ -76,7 +76,7 @@ def create_mae_netcdf(simulation_path, stop_times=None, exact_path=None):
 
   # save results
   mae_path = simulation_path.replace('/results.nc', '/mae.nc')
-  with tf.gfile.GFile(mae_path, 'wb') as f:
+  with tf.io.gfile.GFile (mae_path, 'wb') as f:
     f.write(mae_all.to_netcdf())
 
 

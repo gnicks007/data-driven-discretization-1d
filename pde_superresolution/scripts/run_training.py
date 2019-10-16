@@ -79,7 +79,7 @@ def main(unused_argv):
   if FLAGS.checkpoint_dir:
     logging.info('Saving CSV with metrics')
     csv_path = os.path.join(FLAGS.checkpoint_dir, 'metrics.csv')
-    with tf.gfile.GFile(csv_path, 'w') as f:
+    with tf.io.gfile.GFile (csv_path, 'w') as f:
       metrics_df.to_csv(f, index=False)
 
   logging.info('Finished')

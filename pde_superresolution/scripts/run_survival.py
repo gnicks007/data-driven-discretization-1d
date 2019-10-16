@@ -48,11 +48,11 @@ def create_survival_netcdf(simulation_path, quantile=0.8, exact_path=None):
     return
 
   # read data
-  with tf.gfile.GFile(simulation_path, 'rb') as f:
+  with tf.io.gfile.GFile (simulation_path, 'rb') as f:
     ds = xarray.open_dataset(f.read()).load()
 
   if exact_path is not None:
-    with tf.gfile.GFile(exact_path, 'rb') as f:
+    with tf.io.gfile.GFile (exact_path, 'rb') as f:
       ds_exact = xarray.open_dataset(f.read()).load()
       ds['y_exact'] = (ds_exact['y']
                        .rename({'x': 'x_high'})
@@ -63,7 +63,7 @@ def create_survival_netcdf(simulation_path, quantile=0.8, exact_path=None):
 
   # save results
   survival_path = simulation_path.replace('/results.nc', '/survival.nc')
-  with tf.gfile.GFile(survival_path, 'wb') as f:
+  with tf.io.gfile.GFile (survival_path, 'wb') as f:
     f.write(survival.to_netcdf())
 
 

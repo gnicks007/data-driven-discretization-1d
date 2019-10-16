@@ -196,7 +196,7 @@ def training_loop(snapshots: tf.Tensor,
   logging.info('Training with hyperparameters:\n%r', hparams)
 
   hparams_path = os.path.join(checkpoint_dir, 'hparams.pbtxt')
-  with tf.gfile.GFile(hparams_path, 'w') as f:
+  with tf.io.gfile.GFile (hparams_path, 'w') as f:
     f.write(str(hparams.to_proto()))
 
   logging.info('Setting up training')

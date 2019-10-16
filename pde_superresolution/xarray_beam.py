@@ -26,13 +26,13 @@ print("inside xarray_beam.py")
 
 def read_netcdf(path: str) -> xarray.Dataset:
   """Read a netCDF file from a path into memory."""
-  with tf.gfile.GFile(path, mode='rb') as f:
+  with tf.io.gfile.GFile (path, mode='rb') as f:
     return xarray.open_dataset(f.read()).load()
 
 
 def write_netcdf(ds: xarray.Dataset, path: str) -> None:
   """Write an xarray.Datset to the given path."""
-  with tf.gfile.GFile(path, 'w') as f:
+  with tf.io.gfile.GFile (path, 'w') as f:
     f.write(ds.to_netcdf())
 
 

@@ -591,7 +591,7 @@ def training_loop(snapshots: np.ndarray,
   logging.info('Training with hyperparameters:\n%r', hparams)
 
   hparams_path = os.path.join(checkpoint_dir, 'hparams.pbtxt')
-  with tf.gfile.GFile(hparams_path, 'w') as f:
+  with tf.io.gfile.GFile (hparams_path, 'w') as f:
     f.write(str(hparams.to_proto()))
 
   logging.info('Setting up training')
@@ -643,7 +643,7 @@ def load_hparams(checkpoint_dir: str) -> tf.contrib.training.HParams:
   """Load saved hyperparameters from a checkpoint."""
   hparams_path = os.path.join(checkpoint_dir, 'hparams.pbtxt')
   hparam_def = hparam_pb2.HParamDef()
-  with tf.gfile.GFile(hparams_path, 'r') as f:
+  with tf.io.gfile.GFile (hparams_path, 'r') as f:
     text_format.Merge(f.read(), hparam_def)
   hparams = tf.contrib.training.HParams(hparam_def)
   # Set any new hparams not found in the file with default values.

@@ -601,7 +601,7 @@ class TBGEquation(Equation):
   def __init__(self,
                num_points: int,
                resample_factor: int = 1,
-               period: float = 2 * np.pi,
+               period: float = 1,
                random_seed: int = 0,
               ):
     super(TBGEquation, self).__init__(
@@ -611,12 +611,14 @@ class TBGEquation(Equation):
       self, y: T, spatial_derivatives: Mapping[str, T]) -> T:
     #y = spatial_derivatives['u']
     y_xx = spatial_derivatives['u_xx']
+    y_pred = spatial_derivatives['u']
     x = self.grid.solution_x # self.grid is from baseclass Equation
+    self.eta = 3.0
     print("equation of motion, x length: ", len(x))
 
     # need to make sure I can add x and  y together
     # may need to add a batch axis
-    eqn = y_xx - tf.sin(x + y) # y comes from the function input
+    eqn = y_xx - (self.eta**2)*tf.sin(y) # y comes from the function input
     return eqn
 
   def params(self):

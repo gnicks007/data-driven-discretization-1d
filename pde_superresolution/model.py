@@ -13,7 +13,6 @@
 # limitations under the License.
 # ==============================================================================
 """Neural network models for PDEs."""
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -31,9 +30,7 @@ from pde_superresolution import layers  # pylint: disable=g-bad-import-order
 from pde_superresolution import polynomials  # pylint: disable=g-bad-import-order
 from pde_superresolution import weno  # pylint: disable=g-bad-import-order
 
-
 TensorLike = Union[tf.Tensor, np.ndarray, numbers.Number]  # pylint: disable=invalid-name
-
 
 FINITE_DIFF = polynomials.Method.FINITE_DIFFERENCES
 FINITE_VOL = polynomials.Method.FINITE_VOLUMES
@@ -43,7 +40,6 @@ print("inside model.py")
 def assert_consistent_solution(
     equation: equations.Equation, solution: tf.Tensor):
   """Verify that a solution is consistent with the underlying equation.
-
   Args:
     equation: equation being modeled.
     solution: float32 Tensor with dimensions [batch, x].
@@ -51,6 +47,7 @@ def assert_consistent_solution(
   Raises:
     ValueError: if solution does not have the expected size for the equation.
   """
+  print(solution)
   if equation.grid.solution_num_points != solution.shape[-1].value:
     raise ValueError('solution has unexpected size for equation: {} vs {}'
                      .format(solution.shape[-1].value,
@@ -141,7 +138,6 @@ def integrate_ode(func: Callable[[tf.Tensor, float], tf.Tensor],
                   num_time_steps: int,
                   time_step: float) -> tf.Tensor:
   """Integrate an equation with a fixed time-step.
-
   Args:
     func: function that can be called on (y, t) to calculate the time
       derivative for tensor y at time t.
@@ -455,7 +451,7 @@ def predict_coefficients(inputs: tf.Tensor,
     inputs: float32 Tensor with dimensions [batch, x].
     hparams: model hyperparameters.
     reuse: whether or not to reuse TensorFlow variables.
-
+ 
   Returns:
     Float32 Tensor with dimensions [batch, x, derivative, coefficient].
 
@@ -589,7 +585,7 @@ def _multilayer_conv1d(inputs, hparams, num_targets, reuse=tf.compat.v1.AUTO_REU
   for _ in range(hparams.num_layers - 1):
     net = layers.conv1d_periodic_layer(net, filters=hparams.filter_size,
                                        kernel_size=hparams.kernel_size,
-                                       activation=activation, center=True)
+                                       activation=activati.on, center=True)
   if hparams.num_layers == 0:
     raise NotImplementedError('not implemented yet')
   net = layers.conv1d_periodic_layer(

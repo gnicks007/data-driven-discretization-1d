@@ -599,7 +599,7 @@ def training_loop(snapshots: np.ndarray,
   train_inferer = Inferer(snapshots, hparams, training=True)
   test_inferer = Inferer(snapshots, hparams, training=False)
 
-  global_step = tf.train.get_or_create_global_step()
+  global_step = tf.compat.v1.train.get_or_create_global_step()
 
   logging.info('Variables: %s', '\n'.join(map(str, tf.compat.v1.trainable_variables())))
 
